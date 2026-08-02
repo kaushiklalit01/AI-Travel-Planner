@@ -8,6 +8,8 @@ import Input from "../ui/Input";
 import Button from "../ui/Button";
 import Card from "../ui/Card";
 import api from "../../services/api";
+import Itinerary from "./Itinerary";
+import Hero from "./Hero";
 
 export default function TravelForm() {
   const [formData, setFormData] = useState({
@@ -43,6 +45,7 @@ export default function TravelForm() {
       });
 
       setItinerary(res.data.itinerary);
+      console.log(res.data.itinerary);
     } catch (err) {
       console.error(err);
       alert("Failed to generate itinerary");
@@ -54,23 +57,9 @@ export default function TravelForm() {
   return (
     <div className="max-w-4xl mx-auto px-6 py-10">
 
-      <Card>
+      <Card className="shadow-2xl">
 
-        <div className="flex items-center gap-3 mb-6">
-
-          <Plane className="text-blue-600" size={35} />
-
-          <div>
-            <h1 className="text-3xl font-bold">
-              AI Travel Planner
-            </h1>
-
-            <p className="text-gray-500">
-              Plan your perfect vacation with AI
-            </p>
-          </div>
-
-        </div>
+        <Hero />
 
         <form onSubmit={handleSubmit}>
 
@@ -122,17 +111,7 @@ export default function TravelForm() {
 
       {itinerary && (
   <Card>
-    <TripHeader itinerary={itinerary} />
-
-    <div className="space-y-6">
-      {itinerary.days.map((day) => (
-        <DayCard key={day.day} day={day} />
-      ))}
-    </div>
-
-    <BudgetCard budget={itinerary.budget} />
-
-    <TravelTips tips={itinerary.travelTips} />
+    <Itinerary itinerary={itinerary} />
   </Card>
 )}
 

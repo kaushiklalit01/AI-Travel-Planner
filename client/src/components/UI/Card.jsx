@@ -1,14 +1,16 @@
 export default function Card({
   children,
+  className = "",
 }) {
   return (
     <div
-      className="
+      className={`
         bg-white
-        rounded-2xl
+        rounded-3xl
         shadow-lg
-        p-6
-      "
+        p-8
+        ${className}
+      `}
     >
       {children}
     </div>
