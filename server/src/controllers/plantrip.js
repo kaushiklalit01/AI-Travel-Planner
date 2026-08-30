@@ -1,27 +1,24 @@
 const planTrip = async (req, res) => {
   try {
-    const { destination, days, budget, interests } = req.body;
-
-    if (!destination || !days || !budget || !interests) {
-      return res.status(400).json({
-        success: false,
-        message: "Please provide destination, days, budget and interests"
-      });
-    }
+    const { destination } = req.body;
 
     const itinerary = await generateTravelPlan(req.body);
 
-    res.json({
-      success: true,
-      itinerary
-    });
+    const destinationImage = await getDestinationImage(destination);
+    const weather = await getWeather(destination);
 
+    res.status(200).json({
+      success: true,
+      itinerary,
+      destinationImage,
+      weather,
+    });
   } catch (error) {
     console.error(error);
 
     res.status(500).json({
       success: false,
-      message: error.message
+      message: error.message,
     });
   }
 };

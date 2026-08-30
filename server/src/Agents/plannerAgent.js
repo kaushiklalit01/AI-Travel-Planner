@@ -5,7 +5,7 @@ const extractJson = require("../utils/extractJson");
 
 const llm = new ChatGroq({
   apiKey: process.env.GROQ_API_KEY,
-  model: "llama-3.3-70b-versatile",
+  model: "openai/gpt-oss-20b",
   temperature: 0.7,
 });
 
@@ -21,20 +21,43 @@ const generateTravelPlan = async ({
     .replace("{budget}", budget)
     .replace("{interests}", interests.join(", "));
 
-  const response = await llm.invoke(prompt);
-
   try {
-    // Convert AI response string to JavaScript object
+    // Ask AI to generate the travel plan
+    const response = await llm.invoke(prompt);
+
+    // Show the raw AI response in terminal
+    console.log("=================================");
+    console.log("AI RAW RESPONSE:");
+    console.log(response.content);
+    console.log("=================================");
+
+    // Extract JSON from AI response
     const jsonString = extractJson(response.content);
 
+    console.log("EXTRACTED JSON:");
+    console.log(jsonString);
+    console.log("=================================");
+
+    // Show the part around the possible error
+    console.log("JSON LENGTH:", jsonString.length);
+    console.log("JSON AROUND ERROR AREA:");
+    console.log("JSON AROUND ERROR AREA:");
+    console.log(jsonString.substring(1150, 1300));
+    console.log("=================================");
+
+    // Convert JSON string into JavaScript object
     const parsedResponse = JSON.parse(jsonString);
 
-    // Validate against our schema
+    // Validate response using Zod schema
     const validatedResponse = itinerarySchema.parse(parsedResponse);
 
     return validatedResponse;
+
   } catch (error) {
-    console.error("Error parsing AI response:", error);
+    console.error("=================================");
+    console.error("ERROR GENERATING TRAVEL PLAN:");
+    console.error(error);
+    console.error("=================================");
 
     throw new Error(
       "The AI returned an invalid itinerary. Please try again."

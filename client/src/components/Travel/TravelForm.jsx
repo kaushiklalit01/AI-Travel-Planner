@@ -1,15 +1,15 @@
-import TripHeader from "./TripHeader";
-import DayCard from "./DayCard";
-import BudgetCard from "./BudgetCard";
-import TravelTips from "./TravelTips";
 import { useState } from "react";
-import { Plane } from "lucide-react";
+
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 import Card from "../ui/Card";
+
 import api from "../../services/api";
+
 import Itinerary from "./Itinerary";
 import Hero from "./Hero";
+import DestinationImage from "./DestinationImage";
+import WeatherCard from "./WeatherCard";
 
 export default function TravelForm() {
   const [formData, setFormData] = useState({
@@ -20,7 +20,9 @@ export default function TravelForm() {
   });
 
   const [loading, setLoading] = useState(false);
-  const [itinerary, setItinerary] = useState("");
+  const [itinerary, setItinerary] = useState(null);
+  const [destinationImage, setDestinationImage] = useState(null);
+  const [weather, setWeather] = useState(null);
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -45,7 +47,12 @@ export default function TravelForm() {
       });
 
       setItinerary(res.data.itinerary);
+      setDestinationImage(res.data.destinationImage);
+      setWeather(res.data.weather);
+
+      console.log(res.data.destinationImage);
       console.log(res.data.itinerary);
+      console.log(res.data.weather);
     } catch (err) {
       console.error(err);
       alert("Failed to generate itinerary");
@@ -55,65 +62,110 @@ export default function TravelForm() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-10">
+    <div className="w-full">
 
-      <Card className="shadow-2xl">
+      {/* ================= FORM ================= */}
 
-        <Hero />
+      <Hero>
 
-        <form onSubmit={handleSubmit}>
+  <form onSubmit={handleSubmit}>
 
-          <Input
-            label="Destination"
-            name="destination"
-            placeholder="Goa"
-            value={formData.destination}
-            onChange={handleChange}
-          />
+    <Input
+      label="Destination"
+      name="destination"
+      placeholder="Goa"
+      value={formData.destination}
+      onChange={handleChange}
+    />
 
-          <div className="grid grid-cols-2 gap-5">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 
-            <Input
-              label="Days"
-              type="number"
-              name="days"
-              placeholder="3"
-              value={formData.days}
-              onChange={handleChange}
-            />
+      <Input
+        label="Days"
+        type="number"
+        name="days"
+        placeholder="3"
+        value={formData.days}
+        onChange={handleChange}
+      />
 
-            <Input
-              label="Budget"
-              type="number"
-              name="budget"
-              placeholder="50000"
-              value={formData.budget}
-              onChange={handleChange}
-            />
+      <Input
+        label="Budget"
+        type="number"
+        name="budget"
+        placeholder="50000"
+        value={formData.budget}
+        onChange={handleChange}
+      />
+
+    </div>
+
+    <Input
+      label="Interests"
+      name="interests"
+      placeholder="Beach, Adventure, Nature"
+      value={formData.interests}
+      onChange={handleChange}
+    />
+
+    <Button loading={loading}>
+       Generate Travel Plan
+    </Button>
+
+  </form>
+
+</Hero>
+
+
+      {/* ================= RESULTS ================= */}
+
+      {itinerary && (
+
+        <div className="max-w-7xl mx-auto px-6 py-10">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+          {/* ================= LEFT : ITINERARY ================= */}
+
+          <div className="lg:col-span-2">
+
+            <Card>
+
+              <Itinerary itinerary={itinerary} />
+
+            </Card>
 
           </div>
 
-          <Input
-            label="Interests"
-            name="interests"
-            placeholder="Beach, Adventure, Nature"
-            value={formData.interests}
-            onChange={handleChange}
-          />
 
-          <Button loading={loading}>
-            🚀 Generate Travel Plan
-          </Button>
+          {/* ================= RIGHT : SIDEBAR ================= */}
 
-        </form>
+          <div className="space-y-6">
 
-      </Card>
+            {/* WEATHER */}
 
-      {itinerary && (
-  <Card>
-    <Itinerary itinerary={itinerary} />
-  </Card>
-)}
+            {weather && (
+              <WeatherCard weather={weather} />
+            )}
+
+
+            {/* DESTINATION IMAGE */}
+
+            {destinationImage && (
+              <Card>
+
+                <DestinationImage
+                  image={destinationImage}
+                />
+
+              </Card>
+            )}
+
+          </div>
+
+          </div>
+        </div>
+
+      )}
 
     </div>
   );
