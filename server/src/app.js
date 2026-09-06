@@ -6,7 +6,7 @@ const travelRoutes = require("./routes/travelRoutes");
 
 const app = express();
 
-const allowedOrigins = (process.env.CLIENT_ORIGIN || "http://localhost:5173")
+const allowedOrigins = (process.env.CLIENT_ORIGIN || "http://localhost:5173","https://ai-travel-planner-web-wabu.onrender.com")
   .split(",")
   .map((origin) => origin.trim())
   .filter(Boolean);
