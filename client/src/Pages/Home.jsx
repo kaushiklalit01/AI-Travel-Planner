@@ -1,4 +1,4 @@
-import TravelForm from "../components/travel/TravelForm";
+import TravelForm from "../components/Travel/TravelForm";
 
 export default function Home() {
   return (
@@ -7,5 +7,3 @@ export default function Home() {
     </div>
   );
 }
-
-lalir

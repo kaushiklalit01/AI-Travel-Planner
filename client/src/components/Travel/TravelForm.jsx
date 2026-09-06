@@ -1,8 +1,8 @@
 import { useState } from "react";
 
-import Input from "../ui/Input";
-import Button from "../ui/Button";
-import Card from "../ui/Card";
+import Input from "../UI/Input";
+import Button from "../UI/Button";
+import Card from "../UI/Card";
 
 import api from "../../services/api";
 
@@ -21,7 +21,7 @@ export default function TravelForm() {
 
   const [loading, setLoading] = useState(false);
   const [itinerary, setItinerary] = useState(null);
-  const [destinationImage, setDestinationImage] = useState(null);
+  const [destinationImages, setDestinationImages] = useState([]);
   const [weather, setWeather] = useState(null);
 
   const handleChange = (e) => {
@@ -47,10 +47,10 @@ export default function TravelForm() {
       });
 
       setItinerary(res.data.itinerary);
-      setDestinationImage(res.data.destinationImage);
+      setDestinationImages(res.data.destinationImages);
       setWeather(res.data.weather);
 
-      console.log(res.data.destinationImage);
+      console.log(res.data.destinationImages);
       console.log(res.data.itinerary);
       console.log(res.data.weather);
     } catch (err) {
@@ -150,15 +150,11 @@ export default function TravelForm() {
 
             {/* DESTINATION IMAGE */}
 
-            {destinationImage && (
-              <Card>
-
-                <DestinationImage
-                  image={destinationImage}
-                />
-
-              </Card>
-            )}
+            {destinationImages.length > 0 && (
+  <Card>
+    <DestinationImage images={destinationImages} />
+  </Card>
+)}
 
           </div>
 

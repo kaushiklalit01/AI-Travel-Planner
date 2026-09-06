@@ -29,12 +29,9 @@ const getDestinationImages = async (destination) => {
       photographer: photo.photographer,
       photographerUrl: photo.photographer_url,
     }));
-  } catch (error) {
-    console.error(
-      "Pexels API error:",
-      error.response?.data || error.message
-    );
 
+  } catch (error) {
+    console.error("Pexels API error:", error.message);
     return [];
   }
 };

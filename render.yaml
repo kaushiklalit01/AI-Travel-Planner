@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: ai-travel-planner-api
+    runtime: node
+    rootDir: server
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /api/travel/health
+    envVars:
+      - key: NODE_VERSION
+        value: 22
+      - key: GROQ_API_KEY
+        sync: false
+      - key: PEXELS_API_KEY
+        sync: false
+      - key: OPENWEATHER_API_KEY
+        sync: false
+      - key: CLIENT_ORIGIN
+        sync: false
+
+  - type: web
+    name: ai-travel-planner-web
+    runtime: static
+    rootDir: client
+    buildCommand: npm ci && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: VITE_API_URL
+        sync: false

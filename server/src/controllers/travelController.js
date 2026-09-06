@@ -1,5 +1,5 @@
 const generateTravelPlan = require("../agents/plannerAgent");
-const getDestinationImage = require("../services/imageService");
+const getDestinationImages = require("../services/imageService");
 const getWeather = require("../services/weatherService");
 
 const healthCheck = async (req, res) => {
@@ -15,18 +15,18 @@ const planTrip = async (req, res) => {
 
     const itinerary = await generateTravelPlan(req.body);
 
-    const destinationImage = await getDestinationImage(destination);
+    const destinationImages = await getDestinationImages(destination);
     const weather = await getWeather(destination);
 
-    console.log("Destination image:", destinationImage);
+    console.log("Destination images:", destinationImages);
     console.log("Weather:", weather);
 
-    res.status(200).json({
-      success: true,
-      itinerary,
-      destinationImage,
-      weather,
-    });
+   res.status(200).json({
+  success: true,
+  itinerary,
+  destinationImages,
+  weather,
+});
   } catch (error) {
     console.error(error);
 
