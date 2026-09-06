@@ -1,4 +1,4 @@
-const generateTravelPlan = require("../agents/plannerAgent");
+const generateTravelPlan = require("../Agents/plannerAgent");
 const getDestinationImages = require("../services/imageService");
 const getWeather = require("../services/weatherService");
 
