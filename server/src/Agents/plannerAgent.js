@@ -15,11 +15,15 @@ const generateTravelPlan = async ({
   budget,
   interests,
 }) => {
+  const formattedInterests = Array.isArray(interests)
+    ? interests.join(", ")
+    : String(interests || "sightseeing, local food");
+
   const prompt = plannerPrompt
     .replace("{destination}", destination)
     .replace("{days}", days)
     .replace("{budget}", budget)
-    .replace("{interests}", interests.join(", "));
+    .replace("{interests}", formattedInterests);
 
   try {
     // Ask AI to generate the travel plan
@@ -36,13 +40,6 @@ const generateTravelPlan = async ({
 
     console.log("EXTRACTED JSON:");
     console.log(jsonString);
-    console.log("=================================");
-
-    // Show the part around the possible error
-    console.log("JSON LENGTH:", jsonString.length);
-    console.log("JSON AROUND ERROR AREA:");
-    console.log("JSON AROUND ERROR AREA:");
-    console.log(jsonString.substring(1150, 1300));
     console.log("=================================");
 
     // Convert JSON string into JavaScript object
