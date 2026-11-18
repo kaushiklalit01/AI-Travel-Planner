@@ -167,9 +167,15 @@ export default function TripWizard({ onPlanGenerated, initialDestination = "" })
         },
       };
 
-      const res = await api.post("/travel/plan", payload);
+      let res;
+      try {
+        res = await api.post("/trips", payload);
+      } catch (tripsErr) {
+        console.warn("Primary /trips route failed, falling back to /travel/plan:", tripsErr);
+        res = await api.post("/travel/plan", payload);
+      }
 
-      toast.success("Itinerary generated successfully!", { id: toastId });
+      toast.success("Itinerary generated and saved!", { id: toastId });
 
       if (onPlanGenerated) {
         onPlanGenerated(res.data, payload);

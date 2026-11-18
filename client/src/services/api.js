@@ -1,9 +1,19 @@
 import axios from "axios";
 
 const api = axios.create({
-    // In development this falls back to the local server. In production,
-    // VITE_API_URL is supplied by the hosting provider (for example Render).
-    baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000/api",
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000/api",
 });
+
+// Auto-attach JWT auth token to every outgoing request
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("itinera_token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
 export default api;

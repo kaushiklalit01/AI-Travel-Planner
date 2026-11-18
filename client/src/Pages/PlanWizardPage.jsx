@@ -1,13 +1,9 @@
 import { useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { Sparkles, ArrowLeft } from "lucide-react";
+import { Sparkles, ArrowLeft, Bookmark } from "lucide-react";
 import TripWizard from "../components/Wizard/TripWizard";
 import TripHeader from "../components/Travel/TripHeader";
-import DestinationImage from "../components/Travel/DestinationImage";
-import WeatherCard from "../components/Travel/WeatherCard";
-import BudgetCard from "../components/Travel/BudgetCard";
-import Itinerary from "../components/Travel/Itinerary";
-import TravelTips from "../components/Travel/TravelTips";
+import ItineraryWorkspace from "../components/Travel/ItineraryWorkspace";
 
 export default function PlanWizardPage() {
   const [searchParams] = useSearchParams();
@@ -43,7 +39,7 @@ export default function PlanWizardPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 py-10 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         {!tripResult ? (
           <div>
             <div className="text-center max-w-2xl mx-auto mb-8">
@@ -78,50 +74,34 @@ export default function PlanWizardPage() {
                 <span>Plan Another Trip / Edit Inputs</span>
               </button>
 
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => navigate("/dashboard")}
-                  className="px-4 py-2 rounded-xl text-xs font-bold border border-slate-300 bg-white hover:bg-slate-50 text-slate-700"
-                >
-                  View in Saved Trips
-                </button>
-              </div>
+              <button
+                type="button"
+                onClick={() => navigate("/dashboard")}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 transition-colors"
+              >
+                <Bookmark className="w-3.5 h-3.5 text-emerald-600" />
+                <span>View in Saved Trips</span>
+              </button>
             </div>
 
-            {/* Trip Header */}
+            {/* Trip Header Banner */}
             {tripResult.itinerary && (
               <TripHeader itinerary={tripResult.itinerary} />
             )}
 
-            {/* Main Content Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Left Column: Day-by-Day Itinerary */}
-              <div className="lg:col-span-2 space-y-6">
-                {tripResult.itinerary?.days && (
-                  <Itinerary days={tripResult.itinerary.days} />
-                )}
-
-                {tripResult.itinerary?.travelTips && (
-                  <TravelTips tips={tripResult.itinerary.travelTips} />
-                )}
-              </div>
-
-              {/* Right Column: Destination Visuals, Weather & Budget */}
-              <div className="space-y-6">
-                {tripResult.destinationImages && tripResult.destinationImages.length > 0 && (
-                  <DestinationImage images={tripResult.destinationImages} />
-                )}
-
-                {tripResult.weather && (
-                  <WeatherCard weather={tripResult.weather} />
-                )}
-
-                {tripResult.itinerary?.budget && (
-                  <BudgetCard budget={tripResult.itinerary.budget} />
-                )}
-              </div>
-            </div>
+            {/* Itinerary Tabbed Workspace */}
+            <ItineraryWorkspace
+              tripId={tripResult.trip?.id || "temp"}
+              itinerary={tripResult.itinerary}
+              destinationImages={tripResult.destinationImages}
+              weather={tripResult.weather}
+              onItineraryUpdated={(updatedItinerary) => {
+                setTripResult((prev) => ({
+                  ...prev,
+                  itinerary: updatedItinerary,
+                }));
+              }}
+            />
           </div>
         )}
       </div>

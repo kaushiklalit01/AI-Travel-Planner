@@ -1,0 +1,111 @@
+// Prisma Schema for AI Travel Planner
+// Defaults to SQLite for zero-config local execution
+// To switch to PostgreSQL on Render or Supabase: change provider to "postgresql" and set DATABASE_URL
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           String        @id @default(uuid())
+  email        String        @unique
+  passwordHash String
+  name         String?
+  trips        Trip[]
+  tripMembers  TripMember[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model Trip {
+  id              String           @id @default(uuid())
+  userId          String?
+  user            User?            @relation(fields: [userId], references: [id], onDelete: SetNull)
+  destination     String
+  title           String
+  status          String           @default("DRAFT") // DRAFT, GENERATING, READY, FAILED
+  summary         String?
+  bestTimeToVisit String?
+  totalBudget     Float?
+  currency        String           @default("INR")
+  preferences     TripPreference?
+  itineraryDays   ItineraryDay[]
+  tripMembers     TripMember[]
+  tripMessages    TripMessage[]
+  hotelSuggestions String?         // JSON string of hotel objects
+  warnings        String?          // JSON string of warning objects
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+}
+
+model TripPreference {
+  id              String    @id @default(uuid())
+  tripId          String    @unique
+  trip            Trip      @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  startDate       String?
+  endDate         String?
+  totalDays       Int       @default(4)
+  travelParty     String    @default("Friends") // Solo, Couple, Family, Friends
+  travelerCount   Int       @default(2)
+  travelStyle     String    @default("Adventure, Foodie")
+  budgetTier      String    @default("Moderate")
+  budgetAmount    Float     @default(30000)
+  pace            String    @default("Balanced")
+  interests       String    @default("")
+  specialRequests String?
+}
+
+model ItineraryDay {
+  id               String     @id @default(uuid())
+  tripId           String
+  trip             Trip       @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  dayNumber        Int
+  title            String
+  theme            String?
+  restaurantName   String?
+  restaurantCuisine String?
+  restaurantPrice  String?
+  restaurantDish   String?
+  activities       Activity[]
+}
+
+model Activity {
+  id           String       @id @default(uuid())
+  dayId        String
+  day          ItineraryDay @relation(fields: [dayId], references: [id], onDelete: Cascade)
+  timeSlot     String       // Morning, Afternoon, Evening, Night
+  time         String       // e.g. "09:00 AM"
+  title        String
+  description  String
+  locationName String?
+  latitude     Float?
+  longitude    Float?
+  duration     String?
+  estimatedCost Float?
+  travelNotes  String?
+  orderIndex   Int          @default(0)
+}
+
+model TripMember {
+  id        String   @id @default(uuid())
+  tripId    String
+  trip      Trip     @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      String   @default("viewer") // owner, editor, viewer
+  createdAt DateTime @default(now())
+}
+
+model TripMessage {
+  id        String   @id @default(uuid())
+  tripId    String
+  trip      Trip     @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  sender    String   // user or ai
+  content   String
+  createdAt DateTime @default(now())
+}
