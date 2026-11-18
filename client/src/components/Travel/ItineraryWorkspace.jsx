@@ -10,6 +10,7 @@ import WeatherCard from "./WeatherCard";
 import TravelTips from "./TravelTips";
 import TripMap from "./TripMap";
 import TripChatDrawer from "./TripChatDrawer";
+import UserSatisfactionCard from "./UserSatisfactionCard";
 import { Sparkles, Calendar, MapPin, Compass, Map as MapIcon, List } from "lucide-react";
 
 export default function ItineraryWorkspace({
@@ -139,6 +140,9 @@ export default function ItineraryWorkspace({
           {itinerary.travelTips && itinerary.travelTips.length > 0 && (
             <TravelTips tips={itinerary.travelTips} />
           )}
+
+          {/* User Satisfaction Rating for Academic Quality Metrics */}
+          <UserSatisfactionCard tripTitle={itinerary.tripTitle} />
         </div>
 
         {/* Right Column: Context Panels (Budget, Weather, Hotels, Warnings, Visuals) */}
